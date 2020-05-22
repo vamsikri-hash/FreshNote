@@ -16,6 +16,10 @@ function onLoadClickEventHandler() {
   $("#createNote").click(function () {
     createNote();
   });
+
+  $("#noteModal").click(function () {
+    viewNotes();
+  });
 }
 
 /** create Note */
@@ -47,6 +51,25 @@ function createNote() {
     },
     function (error) {
       console.error("Error Occurred:", error);
+    }
+  );
+}
+
+/**
+ * function to show modal
+ */
+
+function viewNotes() {
+  getTicketDetails(
+    function (ticketData) {
+      client.interface.trigger("showModal", {
+        title: "Notes of ticket",
+        template: "./modal/modal.html",
+        data: ticketData.ticket,
+      });
+    },
+    function (error) {
+      console.error(error);
     }
   );
 }

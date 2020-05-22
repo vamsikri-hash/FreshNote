@@ -1,7 +1,11 @@
 .logo {
-  background: url('freshdesk_logo.png');
+  background: url("freshdesk_logo.png");
   background-repeat: no-repeat;
   background-size: contain;
   height: 25px;
   margin-top: 25px;
+}
+
+.pd {
+  margin-top: 10px;
 }
