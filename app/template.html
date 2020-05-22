@@ -1,0 +1,34 @@
+<html>
+  <head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+    <script src="https://static.freshdev.io/fdk/2.0/assets/fresh_client.js"></script>
+    <script src="app.js"></script>
+    <link rel="stylesheet" type="text/css" href="style.css" />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://static.freshdev.io/fdk/2.0/assets/freshdesk.css"
+    />
+  </head>
+  <body>
+    <div class="fw-widget-wrapper">
+      <p id="apptext"></p>
+      <form role="form" class="noteForm">
+        <div class="form-group">
+          <label for="title">Title</label>
+          <input type="text" name="title" id="title" />
+        </div>
+
+        <div class="form-group">
+          <label for="Description">Description</label>
+          <input type="text" name="description" id="description" />
+        </div>
+      </form>
+      <div class="col-md-4 text-center">
+        <button id="createNote" class="btn btn-primary">
+          Create Note
+        </button>
+      </div>
+    </div>
+  </body>
+</html>
