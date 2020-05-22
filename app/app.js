@@ -27,6 +27,19 @@ function createNote() {
       var title = $("#title").val();
       var description = $("#description").val();
       if (title && description) {
+        var data = {
+          title: `${title}`,
+          description: `${description}`,
+        };
+        client.db
+          .set(ticketData.ticket.id, data)
+          .then(function () {
+            showNotification("success", "Hey", "Note stored successfully");
+          })
+          .catch(function (error) {
+            showNotification("danger", "Hey", "Something went wrong");
+          });
+        clearInput();
         console.log(title);
       } else {
         showNotification("danger", "Hey", "Empty params not allowed");
@@ -65,4 +78,13 @@ function showNotification(type, title, message) {
     .catch(function (error) {
       console.error("Notification error", error);
     });
+}
+
+/**
+ * clear fields after the click
+ */
+
+function clearInput() {
+  $("#title").val("");
+  $("#description").val("");
 }
