@@ -7,10 +7,6 @@ $(document).ready(function () {
         .context()
         .then(function (context) {
           showNotes(context.data);
-          $("#deleteNote").click(function () {
-            console.log("here del clicked");
-            deleteNotes(context.data);
-          });
         })
         .catch(function (error) {
           console.error(error);
@@ -31,12 +27,20 @@ function showNotes(ticket) {
     .get(ticketId)
     .then(function (data) {
       var html = "";
-      html = `<h3>${data.title}</h3><p>${data.description}</p>`;
+      html = `<h3><strong>Title:</strong><br/>${data.title}</h3><h3><strong>Description:</strong></h3><p>${data.description}</p><button id="deleteNote" class="btn btn-primary">Delete</button>`;
       $("#modal").append(html);
       console.log(data);
+      $("#deleteNote").click(function () {
+        console.log("here del clicked");
+        deleteNotes(ticket);
+        console.log("Afetr del");
+      });
     })
     .catch(function (error) {
       console.error(error);
+      var html = "";
+      html = `<h3>No notes to show</h3>`;
+      $("#modal").append(html);
     });
 }
 
@@ -45,33 +49,14 @@ function showNotes(ticket) {
  */
 
 function deleteNotes(ticket) {
-  console.log("clicked");
   var ticketId = ticket.id;
   client.db
     .delete(ticketId)
     .then(function (data) {
-      showNotification("success", "Hey", "Successfully deleted note!");
+      console.log("tick dleted");
+      location.reload();
     })
     .catch(function (error) {
       console.error(error);
-    });
-}
-
-/**
- * Show notifications using notification API
- * @param {String} type
- * @param {String}  title
- * @param {String} message
- */
-
-function showNotification(type, title, message) {
-  client.interface
-    .trigger("showNotify", {
-      type: `${type}`,
-      title: `${title}`,
-      message: `${message}`,
-    })
-    .catch(function (error) {
-      console.error("Notification error", error);
     });
 }
