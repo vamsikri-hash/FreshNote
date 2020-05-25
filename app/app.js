@@ -25,29 +25,72 @@ function onLoadClickEventHandler() {
 /** create Note */
 function createNote() {
   getTicketDetails(
-    function (ticketData) {
-      console.log(ticketData);
-      //createNoteOnTicket(ticketData.ticket.id);
-      var title = $("#title").val();
-      var description = $("#description").val();
-      if (title && description) {
-        var data = {
-          title: `${title}`,
-          description: `${description}`,
-        };
-        client.db
-          .set(ticketData.ticket.id, data)
-          .then(function () {
-            showNotification("success", "Hey", "Note stored successfully");
-          })
-          .catch(function (error) {
-            showNotification("danger", "Hey", "Something went wrong");
-          });
-        clearInput();
-        console.log(title);
-      } else {
-        showNotification("danger", "Hey", "Empty params not allowed");
-      }
+    function fetchNotes(ticketData) {
+      var ticketId = ticketData.ticket.id;
+      console.info(ticketId);
+      client.db
+        .get(ticketId)
+        .then(function (data) {
+          console.log(data);
+          var newArr = Object.values(data);
+          console.log(newArr);
+          var title = $("#title").val();
+          var description = $("#description").val();
+          if (title && description) {
+            var data = {
+              title: `${title}`,
+              description: `${description}`,
+              createdon: new Date().toDateString(),
+            };
+            console.info([...newArr, data]);
+            client.db
+              .set(ticketId, [...newArr, data])
+              .then(function () {
+                showNotification("success", "Hey", "Note stored successfully");
+              })
+              .catch(function (error) {
+                console.error(error);
+                showNotification("danger", "Hey", "Something went wrong");
+              });
+            clearInput();
+            console.log(title);
+          } else {
+            showNotification("danger", "Hey", "Empty params not allowed");
+          }
+        })
+        .catch(function (error) {
+          if (error.status == 404) {
+            console.log(ticketData);
+            //createNoteOnTicket(ticketData.ticket.id);
+            var title = $("#title").val();
+            var description = $("#description").val();
+            if (title && description) {
+              var data = {
+                title: `${title}`,
+                description: `${description}`,
+                createdon: new Date().toDateString(),
+              };
+              client.db
+                .set(ticketId, [data])
+                .then(function () {
+                  showNotification(
+                    "success",
+                    "Hey",
+                    "Note stored successfully"
+                  );
+                })
+                .catch(function (error) {
+                  console.error(error);
+                  showNotification("danger", "Hey", "Something went wrong");
+                });
+              clearInput();
+              console.log(title);
+            } else {
+              showNotification("danger", "Hey", "Empty params not allowed");
+            }
+          }
+          console.error(error);
+        });
     },
     function (error) {
       console.error("Error Occurred:", error);

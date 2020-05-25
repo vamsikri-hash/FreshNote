@@ -26,15 +26,19 @@ function showNotes(ticket) {
   client.db
     .get(ticketId)
     .then(function (data) {
-      var html = "";
-      html = `<h3><strong>Title:</strong><br/>${data.title}</h3><h3><strong>Description:</strong></h3><p>${data.description}</p><button id="deleteNote" class="btn btn-primary">Delete</button>`;
-      $("#modal").append(html);
-      console.log(data);
-      $("#deleteNote").click(function () {
-        console.log("here del clicked");
-        deleteNotes(ticket);
-        console.log("Afetr del");
-      });
+      var len = Object.keys(data).length;
+      console.error(len);
+      for (var key in data) {
+        var note = data[key];
+        var html = "";
+        html = `<h3><strong>Title:</strong> <br/>${note.title}</h3><h3><strong>Description:</strong></h3><h4>${note.description}</h4><button id="deleteNote-${key}" class="btn btn-primary">Delete</button> <span class="date">Created On:${note.createdon}</span>`;
+        $("#modal").append(html);
+        $(`#deleteNote-${key}`).click(function () {
+          console.log("here del clicked");
+          deleteNotes(ticket, key, len);
+          console.log("Afetr del");
+        });
+      }
     })
     .catch(function (error) {
       console.error(error);
@@ -48,15 +52,28 @@ function showNotes(ticket) {
  * Function to delete note drom db
  */
 
-function deleteNotes(ticket) {
+function deleteNotes(ticket, key, len) {
   var ticketId = ticket.id;
-  client.db
-    .delete(ticketId)
-    .then(function (data) {
-      console.log("tick dleted");
-      location.reload();
-    })
-    .catch(function (error) {
-      console.error(error);
-    });
+  if (len === 0) {
+    client.db
+      .delete(ticketId)
+      .then(function (data) {
+        console.info(data);
+        location.reload();
+      })
+      .catch(function (error) {
+        console.error(error);
+      });
+  } else {
+    console.log("here");
+    client.db
+      .update(ticketId, "remove", [key])
+      .then(function (data) {
+        console.info(data);
+        location.reload();
+      })
+      .catch(function (error) {
+        console.error(error);
+      });
+  }
 }
